@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: zuul
+    
+server:
+  port: 3001
+  
+eureka:
+  client:
+    service-url:
+     defaultZone: http://eureka1:2001/eureka,http://eureka2:2002/eureka
+     
+     #默认就是此配置 /aa/**才需要配置  是注册中心读取数据 访问此路径下的任意项目
+zuul:
+  routes:
+   item-service: /item-service/**
+   user-service: /user-service/**
+   order-service: /order-service/**            
+  retryable: true #启动重试 负载均衡默认有 
+#  sensitive-headers: 设置不过滤这样的消息头
+                # zuul 会过滤敏感 http 协议头，默认过滤以下协议头：
+                # • Cookie
+                # • Set-Cookie
+                # • Authorization
+                
+#默认1秒
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 500
+            
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+            
+  
